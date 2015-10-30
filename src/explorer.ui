@@ -10,8 +10,11 @@
     <height>600</height>
    </rect>
   </property>
+  <property name="acceptDrops">
+   <bool>true</bool>
+  </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>BIG Editor</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QTableWidget" name="tableWidget">
@@ -103,112 +106,112 @@
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionOpen">
    <property name="text">
-    <string>Open...</string>
+    <string>&amp;Open...</string>
    </property>
   </action>
   <action name="actionClose">
    <property name="text">
-    <string>Close</string>
+    <string>&amp;Close</string>
    </property>
   </action>
   <action name="actionSave">
    <property name="text">
-    <string>Save</string>
+    <string>&amp;Save</string>
    </property>
   </action>
   <action name="actionSave_As">
    <property name="text">
-    <string>Save As...</string>
+    <string>Sa&amp;ve As...</string>
    </property>
   </action>
   <action name="actionCopy">
    <property name="text">
-    <string>Copy</string>
+    <string>&amp;Copy</string>
    </property>
   </action>
   <action name="actionPaste">
    <property name="text">
-    <string>Paste</string>
+    <string>&amp;Paste</string>
    </property>
   </action>
   <action name="actionCut">
    <property name="text">
-    <string>Cut</string>
+    <string>C&amp;ut</string>
    </property>
   </action>
   <action name="actionFind">
    <property name="text">
-    <string>Find...</string>
+    <string>&amp;Find...</string>
    </property>
   </action>
   <action name="actionReplace">
    <property name="text">
-    <string>Replace...</string>
+    <string>&amp;Replace...</string>
    </property>
   </action>
   <action name="actionExtract">
    <property name="text">
-    <string>Extract</string>
+    <string>&amp;Extract</string>
    </property>
   </action>
   <action name="actionExtract_Here">
    <property name="text">
-    <string>Extract All</string>
+    <string>E&amp;xtract All</string>
    </property>
   </action>
   <action name="action_todo">
    <property name="text">
-    <string>(todo)</string>
+    <string>(t&amp;odo)</string>
    </property>
   </action>
   <action name="actionAbout_BIG_Editor">
    <property name="text">
-    <string>About BIG Editor</string>
+    <string>&amp;About BIG Editor</string>
    </property>
   </action>
   <action name="actionNew">
    <property name="text">
-    <string>New</string>
+    <string>&amp;New</string>
    </property>
   </action>
   <action name="actionSet_File_Format">
    <property name="text">
-    <string>Set File Format</string>
+    <string>Set &amp;File Format</string>
    </property>
   </action>
   <action name="actionExit">
    <property name="text">
-    <string>Exit</string>
+    <string>&amp;Exit</string>
    </property>
   </action>
   <action name="actionEdit_with_Editor">
    <property name="text">
-    <string>Edit with Editor</string>
+    <string>Edit &amp;with Editor</string>
    </property>
   </action>
   <action name="actionDelete_File">
    <property name="text">
-    <string>Delete File</string>
+    <string>&amp;Delete File</string>
    </property>
   </action>
   <action name="actionAdd_File">
    <property name="text">
-    <string>Add File</string>
+    <string>&amp;Add File</string>
    </property>
   </action>
   <action name="actionAdd_Directory">
    <property name="text">
-    <string>Add Directory</string>
+    <string>Add D&amp;irectory</string>
    </property>
   </action>
   <action name="actionAdd_Empty_File">
    <property name="text">
-    <string>Add Empty File</string>
+    <string>Add E&amp;mpty File</string>
    </property>
   </action>
   <action name="actionRename_File">
    <property name="text">
-    <string>Rename File</string>
+    <string>Re&amp;name File</string>
    </property>
   </action>
  </widget>

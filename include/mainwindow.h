@@ -19,6 +19,7 @@ public:
 
 private slots:
 	// Qt slots
+	void on_actionLicense_triggered(bool checked);
 	void on_pushButton_play_clicked();
 	void on_pushButton_pause_clicked();
 	void on_pushButton_next_clicked();

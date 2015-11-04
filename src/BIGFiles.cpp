@@ -44,16 +44,6 @@
 // given in the FileEntry_t structure and ends where position + file size is.
 // You should use the index table for finding all files instead of calculating offsets.
 
-static inline std::string GetHighestSize(uint64_t size)
-{
-    static const char *sizes[] = { "B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB" };
-    unsigned int si = 0;
-    for (; 1024 < size; si++, size >>= 10)
-    	;
-
-    return _("%ld %s", size, si > sizeof(sizes) ? "(hello future!)" : sizes[si]);
-}
-
 void _mkdir(const char *dir)
 {
     char tmp[256];
@@ -246,10 +236,23 @@ namespace std
 	// Get the absolute path of the file (no symlinks or anything)
 	std::string realpath(const std::string &realname)
 	{
-		char *resolved_path = nullptr;
+		// the man page for realpath lied to me.
+		// Upon giving realpath an unallocated string, realpath simply
+		// returns null and gives no indication that anything is wrong.
+		// so instead we allocate a whopping sizeof(PATH_MAX) bytes to
+		// fill in a directory. I rather dislike this because it can't
+		// handle extremely large paths but whatever.
+		char *resolved_path = new char[PATH_MAX];
+		errno = 0;
 		::realpath(realname.c_str(), resolved_path);
+		if (errno || !resolved_path)
+		{
+			printf("Errno: %s (%d)\n", strerror(errno), errno);
+			// Whatever.
+			return realname;
+		}
 		std::string ret = resolved_path;
-		free(resolved_path);
+		delete[] resolved_path;
 		return resolved_path;
 	}
 
@@ -275,7 +278,7 @@ namespace std
 }
 
 
-BigArchive::BigArchive(const std::string &path)
+BigArchive::BigArchive(const std::string &path) : corrupt(false)
 {
 	// Get path information
 	this->path = std::realpath(path);
@@ -294,12 +297,29 @@ BigArchive::BigArchive(const std::string &path)
 
 	fread(&this->header, sizeof(header_t), 1, this->handle);
 
+	if (this->GetArchiveType() != "BIGF" && this->GetArchiveType() != "BIG4")
+	{
+		fprintf(stderr, "Invalid archive: \"%s\"\n", this->GetArchiveType().c_str());
+		for (unsigned i = 0; i < this->GetArchiveType().size(); ++i)
+		{
+			fprintf(stderr, "type[%d]: %c -> 0x%X\n", i, this->GetArchiveType()[i], this->GetArchiveType()[i]);
+		}
+		// TODO: fix this with a proper throw.
+		throw std::system_error();
+	}
+
+	if (this->filesize != this->header.size)
+	{
+		fprintf(stderr, "WARNING: The filesize of the archive differs from the value contained in the archive. Possible corruption of archive file?\n");
+		this->corrupt = true;
+	}
+
 	// Fix endianness to make this even useful.
 	this->header.files = be32toh(this->header.files);
 	this->header.index_table = be32toh(this->header.index_table);
 
 	// Print some useful info on the header.
-	tfm::printf("EXT: %s\n", this->GetArchiveType().c_str());
+	tfm::printf("EXT: %s\n", this->GetArchiveType());
 	// Get the file size
 	tfm::printf("File size: %ld (%s)\n", filesize, GetHighestSize(filesize));
 	// Print other info.

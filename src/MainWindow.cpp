@@ -5,6 +5,7 @@
 #include <QTableWidgetItem>
 #include <QAbstractItemView>
 #include <QDesktopWidget>
+#include <QTableWidgetItem>
 #include <QDir>
 #include <QFileDialog>
 #include <QLineEdit>
@@ -33,6 +34,13 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER \
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, \
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE \
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.";
+
+enum
+{
+		MW_FILE, // this corresponds to the "file" column
+ 		MW_TYPE, // this corresponds to the "Type" column
+		MW_SIZE, // this corresponds to the "Size" column
+};
 
 MainWidget::MainWidget(QWidget *parent) : QMainWindow(parent), archive(nullptr), ui(new Ui::MainWindow)
 {
@@ -64,9 +72,56 @@ MainWidget::~MainWidget()
 	delete ui;
 }
 
+void MainWidget::OpenArchiveFile(const QString &fileName)
+{
+	this->ui->statusbar->showMessage(_("Opening archive \"%s\"...", fileName.toStdString()).c_str());
+
+	// free the previous archive if it was not already freed
+	if (this->archive)
+		delete this->archive;
+
+	// Attempt to open the archive.
+	try
+	{
+		this->archive = new BigArchive(fileName.toStdString());
+	}
+	catch (std::system_error se)
+	{
+		QMessageBox::critical(this, "Error",
+							_("Error opening \"%s\": %s (%d)", fileName.toStdString(), se.what(), se.code()).c_str());
+
+		if (this->archive)
+			delete this->archive;
+
+		this->archive = nullptr;
+		return;
+	}
+
+	printf("%zu entries loaded\n", this->archive->FileEntries.size());
+
+	if (this->archive->GetArchiveCorruptFlag())
+		QMessageBox::warning(this, "Warning: Corrupt Archive", "The size of this archive differs from when it was originally created, this archive may be corrupt!");
+
+	// Populate the list with files.
+	int row = 0;
+	for (auto file : this->archive->FileEntries)
+	{
+		printf("populating table item %d: %s\n", row, file->filename);
+		this->ui->tableWidget->setItem(row, 0, new QTableWidgetItem(file->filename));
+		this->ui->tableWidget->setItem(row, 1, new QTableWidgetItem("Unknown."));
+		this->ui->tableWidget->setItem(row, 2, new QTableWidgetItem(GetHighestSize(file->size).c_str()));
+		row++;
+	}
+
+	// we're done! :D
+	this->ui->statusbar->showMessage(_("Opened \"%s\" which is %s big and contains %d files in %s format.",
+									this->archive->GetFileName(), GetHighestSize(this->archive->GetFileSize()),
+									this->archive->GetFileCount(), this->archive->GetArchiveType()).c_str());
+}
+
 void MainWidget::on_actionLicense_triggered(bool checked)
 {
-	QMessageBox::information(this, "License Information", license);
+	QMessageBox::about(this, "License Information", license);
 }
 
 void MainWidget::on_actionNew_triggered(bool checked)
@@ -85,11 +140,9 @@ void MainWidget::on_actionOpen_triggered(bool checked)
 	if (!fileName.isEmpty())
 		printf("User entered location \"%s\"\n", fileName.toStdString().c_str());
 
-	// free the previous archive if it was not already freed
-	if (this->archive)
-		delete this->archive;
 
-	this->archive = new BigArchive(fileName.toStdString());
+	// Open the archive.
+	this->OpenArchiveFile(fileName);
 }
 
 void MainWidget::on_actionSave_As_triggered(bool checked)

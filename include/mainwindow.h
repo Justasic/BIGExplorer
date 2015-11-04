@@ -17,6 +17,8 @@ public:
 	explicit MainWidget(QWidget *parent = 0);
 	virtual ~MainWidget();
 
+	void OpenArchiveFile(const QString &fileName);
+
 	BigArchive *archive;
 
 private slots:

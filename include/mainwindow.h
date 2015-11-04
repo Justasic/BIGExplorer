@@ -29,6 +29,9 @@ private slots:
 	void on_actionSave_As_triggered(bool checked);
 	void on_actionExit_triggered(bool checked);
 
+	void on_actionBIGF_toggled(bool checked);
+	void on_actionBIG4_toggled(bool checked);
+
 
 	void on_tableWidget_cellDoubleClicked(int, int);
 

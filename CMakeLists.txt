@@ -102,7 +102,7 @@ if ("${CMAKE_GENERATOR}" STREQUAL "Ninja" AND "${CMAKE_CXX_COMPILER_ID}" STREQUA
 endif ("${CMAKE_GENERATOR}" STREQUAL "Ninja" AND "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 
 # C++11 support enabled.
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra -Werror=undef -Wno-unused-parameter")
 #set(CXXFLAGS "${CXXFLAGS} ${CMAKE_CXX_FLAGS}")
 
 # Thanks to this StackOverflow question I managed to get this shit to work the way I want.

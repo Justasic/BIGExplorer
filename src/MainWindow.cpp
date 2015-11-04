@@ -103,6 +103,7 @@ void MainWidget::OpenArchiveFile(const QString &fileName)
 		QMessageBox::warning(this, "Warning: Corrupt Archive", "The size of this archive differs from when it was originally created, this archive may be corrupt!");
 
 	// Populate the list with files.
+	this->ui->tableWidget->setRowCount(this->archive->FileEntries.size());
 	int row = 0;
 	for (auto file : this->archive->FileEntries)
 	{
@@ -117,6 +118,18 @@ void MainWidget::OpenArchiveFile(const QString &fileName)
 	this->ui->statusbar->showMessage(_("Opened \"%s\" which is %s big and contains %d files in %s format.",
 									this->archive->GetFileName(), GetHighestSize(this->archive->GetFileSize()),
 									this->archive->GetFileCount(), this->archive->GetArchiveType()).c_str());
+}
+
+void MainWidget::on_actionBIGF_toggled(bool checked)
+{
+	if (checked && this->ui->actionBIG4->isChecked())
+		this->ui->actionBIG4->setChecked(false);
+}
+
+void MainWidget::on_actionBIG4_toggled(bool checked)
+{
+	if (checked && this->ui->actionBIGF->isChecked())
+		this->ui->actionBIGF->setChecked(false);
 }
 
 void MainWidget::on_actionLicense_triggered(bool checked)

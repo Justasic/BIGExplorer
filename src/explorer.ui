@@ -237,11 +237,20 @@
    </property>
   </action>
   <action name="actionBIGF">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>BIGF</string>
    </property>
   </action>
   <action name="actionBIG4">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>BIG4</string>
    </property>

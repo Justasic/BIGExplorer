@@ -2,7 +2,7 @@
 
 #include <QWidget>
 #include <QMainWindow>
-#include <xmp.h>
+#include "BIGFiles.h"
 
 // defined in Main.cpp
 extern std::vector<std::string> musicfiles;
@@ -17,13 +17,17 @@ public:
 	explicit MainWidget(QWidget *parent = 0);
 	virtual ~MainWidget();
 
+	BigArchive *archive;
+
 private slots:
 	// Qt slots
 	void on_actionLicense_triggered(bool checked);
-	void on_pushButton_play_clicked();
-	void on_pushButton_pause_clicked();
-	void on_pushButton_next_clicked();
-	void on_pushButton_previous_clicked();
+	void on_actionNew_triggered(bool checked);
+	void on_actionOpen_triggered(bool checked);
+	void on_actionSave_As_triggered(bool checked);
+	void on_actionExit_triggered(bool checked);
+
+
 	void on_tableWidget_cellDoubleClicked(int, int);
 
 private:

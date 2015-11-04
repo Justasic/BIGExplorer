@@ -5,6 +5,9 @@
 #include <QTableWidgetItem>
 #include <QAbstractItemView>
 #include <QDesktopWidget>
+#include <QDir>
+#include <QFileDialog>
+#include <QLineEdit>
 #include <cstdlib>
 
 // Project includes
@@ -31,7 +34,7 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, \
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE \
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.";
 
-MainWidget::MainWidget(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
+MainWidget::MainWidget(QWidget *parent) : QMainWindow(parent), archive(nullptr), ui(new Ui::MainWindow)
 {
 	ui->setupUi(this);
 	ui->statusbar->showMessage("Ready");
@@ -66,9 +69,48 @@ void MainWidget::on_actionLicense_triggered(bool checked)
 	QMessageBox::information(this, "License Information", license);
 }
 
-// Qt slots
-void MainWidget::on_pushButton_play_clicked() {}
-void MainWidget::on_pushButton_pause_clicked() {}
-void MainWidget::on_pushButton_next_clicked() {}
-void MainWidget::on_pushButton_previous_clicked() {}
-void MainWidget::on_tableWidget_cellDoubleClicked(int, int) {}
+void MainWidget::on_actionNew_triggered(bool checked)
+{
+	// TODO: Clear all dialogs, tables, etc. and force new files to be created
+	// when you click "Save" or "Save as"
+}
+
+void MainWidget::on_actionOpen_triggered(bool checked)
+{
+	QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"),
+                                                QDir::home().absolutePath(),
+                                                tr("BIG archives (*.big)"));
+
+	// Print a simple message
+	if (!fileName.isEmpty())
+		printf("User entered location \"%s\"\n", fileName.toStdString().c_str());
+
+	// free the previous archive if it was not already freed
+	if (this->archive)
+		delete this->archive;
+
+	this->archive = new BigArchive(fileName.toStdString());
+}
+
+void MainWidget::on_actionSave_As_triggered(bool checked)
+{
+	QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"),
+                           QDir::home().absolutePath() ,
+                           tr("BIG archives (*.big)"));
+
+	if (!fileName.isEmpty())
+		printf("Saved file to \"%s\"\n", fileName.toStdString().c_str());
+}
+
+void MainWidget::on_actionExit_triggered(bool checked)
+{
+	// Bye!
+	QApplication::quit();
+}
+
+void MainWidget::on_tableWidget_cellDoubleClicked(int, int)
+{
+	// if it's text data, copy it directly into the plainTextEdit
+	// if it's binary data, print a text hex table of the data (within reasonable size) <-- this may be version 2.0
+
+}
